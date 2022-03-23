@@ -1,25 +1,64 @@
-import React, { FormEvent, useState } from 'react';
+import React, {
+  FormEvent,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
+import validator from 'validator';
 import logo from './logo.svg';
 import {
-  useAddMessageMutation,
-  useGetMessagesQuery,
-} from './graphql/message.generated';
+  useCreateUrlMutation,
+} from './graphql/url.generated';
+import { UrlOutputDto } from './graphql';
 
 function App() {
-  const [newMessage, setNewMessage] = useState({ value: '' });
-  const { data, refetch } = useGetMessagesQuery();
-  const [addMessage] = useAddMessageMutation();
+  const errorRef = useRef<HTMLDivElement>(null);
+  const localUrls = localStorage.getItem('urls');
+  const [urls, setUrls] = useState((localUrls ? JSON.parse(localUrls) : []) as UrlOutputDto[]);
+  const [newUrl, setNewUrl] = useState({ value: '' });
+  const [urlError, setUrlError] = useState({ error: '' });
+  const [generateUrl] = useCreateUrlMutation();
+
+  useEffect(() => {
+    localStorage.setItem('urls', JSON.stringify(urls));
+  }, [urls]);
+
+  useEffect(() => {
+    if (errorRef.current) {
+      errorRef.current.classList.add('opacity-0');
+      setTimeout(() => {
+        setUrlError({ error: '' });
+      }, 2000);
+    }
+  }, [urlError]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewMessage({ value: e.target.value });
+    setNewUrl({ value: e.target.value });
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (newMessage.value) {
-      await addMessage({ variables: { message: newMessage.value } });
-      setNewMessage({ value: '' });
-      await refetch();
+
+    if (!validator.isURL(newUrl.value)) {
+      setUrlError({ error: 'Please check your link and try again' });
+
+      return;
+    }
+
+    if (newUrl.value) {
+      const result = await generateUrl({ variables: { url: newUrl.value } });
+
+      if (!result.data) {
+        setUrlError({ error: 'Generation failed, please try again' });
+
+        return;
+      }
+
+      setUrls([
+        ...urls,
+        result.data.generateUrl,
+      ]);
+      setNewUrl({ value: result.data.generateUrl.shortUrl });
     }
   };
 
@@ -31,39 +70,42 @@ function App() {
           URL shortener
         </h1>
       </header>
-      <section className="container mx-auto py-8">
+      <section className="mx-auto bg-red-200 py-8">
         <div
-          data-cy="messageContainer"
-          className="p-8 flex flex-col gap-6 items-center bg-white rounded-2xl"
+          className="w-1/2 mx-auto flex flex-col gap-6 items-center rounded-2xl"
         >
-          <div
-            className="font-semibold text-xl"
-          >
-            Add a few messages to ensure that everything is working correctly :
-          </div>
-          {data?.messages.map((message) => (
-            <div key={message.id}>{message.message}</div>
-          ))}
-          <div className="font-semibold">
+          <div className="font-semibold w-full">
             <form
               className="flex gap-4"
               onSubmit={onSubmit}
             >
               <input
                 data-cy="messageInput"
-                placeholder="Your message"
-                className="p-3 w-96 border-2 rounded-full border-main-blue"
-                value={newMessage.value}
+                placeholder="Shorten your link"
+                className="p-3 w-3/4 border-2 rounded-2xl border-main-blue"
+                value={newUrl.value}
                 onChange={onChange}
               />
               <button
-                data-cy="submit"
                 type="submit"
-                className="p-3 bg-main-blue text-white rounded-full"
+                className="p-3 w-1/4 bg-main-blue text-white rounded-2xl"
               >
-                Add message
+                Shorten
               </button>
             </form>
+          </div>
+          { urlError.error && <div ref={errorRef} className="w-full bg-red-400 p-3 rounded-2xl text-white text-center transition-opacity duration-1000 delay-1000">{urlError.error}</div> }
+          <div className="w-full rounded-2xl bg-white">
+            <ul className="divide-y">
+              {urls.map((url) => (
+                <li key={url.id} className="px-8 py-4 content-center justify-between flex">
+                  <span>{url.url}</span>
+                  <span>
+                    <a className="text-blue-600" href={url.shortUrl} target="_blank" rel="noreferrer">{url.shortUrl}</a>
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

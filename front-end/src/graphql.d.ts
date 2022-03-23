@@ -12,23 +12,35 @@ export type Scalars = {
   Float: number;
 };
 
-export type MessageDto = {
-  __typename?: 'MessageDto';
-  id?: Maybe<Scalars['Int']>;
-  message: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  message: MessageDto;
+  generateUrl: UrlOutputDto;
 };
 
 
-export type MutationMessageArgs = {
-  message: Scalars['String'];
+export type MutationGenerateUrlArgs = {
+  url: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  messages: Array<MessageDto>;
+  url: UrlOutputDto;
+  urls: Array<UrlOutputDto>;
+};
+
+
+export type QueryUrlArgs = {
+  shortUrl: Scalars['String'];
+};
+
+
+export type QueryUrlsArgs = {
+  ids?: InputMaybe<Array<Scalars['Float']>>;
+};
+
+export type UrlOutputDto = {
+  __typename?: 'UrlOutputDto';
+  id: Scalars['Int'];
+  shortUrl: Scalars['String'];
+  url: Scalars['String'];
 };

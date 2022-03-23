@@ -1,0 +1,15 @@
+query getUrl($shortUrl: String!) {
+    url(shortUrl: $shortUrl) {
+        id
+        url,
+        shortUrl
+    }
+}
+
+mutation createUrl($url: String!) {
+    generateUrl(url: $url) {
+        id
+        url,
+        shortUrl
+    }
+}
