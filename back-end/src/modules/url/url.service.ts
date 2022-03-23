@@ -14,6 +14,16 @@ export class UrlService {
     return this.getQueryBuilder().where('url.shortUrl = :shortUrl', { shortUrl }).getOne();
   }
 
+  async findAll(ids?: number[]): Promise<Url[]> {
+    const queryBuilder = this.getQueryBuilder();
+
+    if (ids) {
+      queryBuilder.where('url.id IN (:...ids)', { ids });
+    }
+
+    return queryBuilder.getMany();
+  }
+
   async create(url: string) {
     let stop = false;
     let count = 0;
@@ -46,7 +56,7 @@ export class UrlService {
 
     return this.urlRepository.save({
       url,
-      shortUrl
+      shortUrl: `https://localhost:3000/${shortUrl}`
     });
   }
 

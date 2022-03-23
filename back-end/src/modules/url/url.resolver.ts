@@ -11,6 +11,11 @@ export class UrlResolver {
     return this.urlService.findOne(shortUrl);
   }
 
+  @Query(returns => [UrlOutputDto])
+  urls(@Args('ids', { type: () => [Number!], nullable: true }) ids: number[]) {
+    return this.urlService.findAll(ids);
+  }
+
   @Mutation(returns => UrlOutputDto)
   generateUrl(@Args('url', { type: () => String }) url: string) {
     return this.urlService.create(url);
