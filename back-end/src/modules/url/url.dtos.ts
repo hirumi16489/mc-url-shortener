@@ -20,4 +20,3 @@ export class UrlInputDto {
   @Field()
   alias: string;
 }
-
