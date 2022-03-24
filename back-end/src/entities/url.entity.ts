@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn, Index } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Index, OneToMany } from 'typeorm';
+import { UrlClick } from './urlClick.entity';
 
 @Entity()
 export class Url {
@@ -11,4 +12,7 @@ export class Url {
   @Index()
   @Column({ unique: true })
   shortUrl: string;
+
+  @OneToMany(() => UrlClick, urlClick => urlClick.url)
+  clicks: UrlClick[];
 }

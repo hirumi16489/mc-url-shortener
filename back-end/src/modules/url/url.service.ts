@@ -17,7 +17,7 @@ export class UrlService {
   async findAll(ids?: number[]): Promise<Url[]> {
     const queryBuilder = this.getQueryBuilder();
 
-    if (ids) {
+    if (Array.isArray(ids) && ids.length > 0) {
       queryBuilder.where('url.id IN (:...ids)', { ids });
     }
 

@@ -1,7 +1,8 @@
-import { Field, Int, ObjectType, InputType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { UrlClick } from '../url-click/url-click.dtos';
 
 @ObjectType()
-export class UrlOutputDto {
+export class Url{
   @Field(type => Int)
   id: number;
 
@@ -10,13 +11,7 @@ export class UrlOutputDto {
 
   @Field()
   shortUrl: string;
-}
 
-@InputType()
-export class UrlInputDto {
-  @Field()
-  url: string;
-
-  @Field()
-  alias: string;
+  @Field(type => [UrlClick])
+  clicks: UrlClick[];
 }

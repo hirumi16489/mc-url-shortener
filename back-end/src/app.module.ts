@@ -4,7 +4,7 @@ import { Connection } from 'typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UrlModule } from './modules/url/url.module';
-import { join } from 'path';
+import { UrlClickModule } from './modules/url-click/url-click.module';
 
 const graphQLConfig = GraphQLModule.forRoot<ApolloDriverConfig>({
   driver: ApolloDriver,
@@ -15,7 +15,7 @@ const graphQLConfig = GraphQLModule.forRoot<ApolloDriverConfig>({
 
 const typeORMConfig = TypeOrmModule.forRoot();
 
-const modules = [UrlModule];
+const modules = [UrlModule, UrlClickModule];
 
 @Module({
   imports: [graphQLConfig, typeORMConfig, ...modules],
