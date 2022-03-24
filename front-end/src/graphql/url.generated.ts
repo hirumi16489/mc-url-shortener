@@ -8,14 +8,21 @@ export type GetUrlQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetUrlQuery = { __typename?: 'Query', url: { __typename?: 'UrlOutputDto', id: number, url: string, shortUrl: string } };
+export type GetUrlQuery = { __typename?: 'Query', url: { __typename?: 'Url', id: number, url: string, shortUrl: string, clicks: Array<{ __typename?: 'UrlClick', date: any }> } };
 
 export type CreateUrlMutationVariables = Types.Exact<{
   url: Types.Scalars['String'];
 }>;
 
 
-export type CreateUrlMutation = { __typename?: 'Mutation', generateUrl: { __typename?: 'UrlOutputDto', id: number, url: string, shortUrl: string } };
+export type CreateUrlMutation = { __typename?: 'Mutation', generateUrl: { __typename?: 'Url', id: number, url: string, shortUrl: string } };
+
+export type CreateUrlCLickMutationVariables = Types.Exact<{
+  urlId: Types.Scalars['Int'];
+}>;
+
+
+export type CreateUrlCLickMutation = { __typename?: 'Mutation', newClick: { __typename?: 'UrlClick', date: any } };
 
 
 export const GetUrlDocument = gql`
@@ -24,6 +31,9 @@ export const GetUrlDocument = gql`
     id
     url
     shortUrl
+    clicks {
+      date
+    }
   }
 }
     `;
@@ -54,3 +64,17 @@ export function useCreateUrlMutation(baseOptions?: Apollo.MutationHookOptions<Cr
 export type CreateUrlMutationHookResult = ReturnType<typeof useCreateUrlMutation>;
 export type CreateUrlMutationResult = Apollo.MutationResult<CreateUrlMutation>;
 export type CreateUrlMutationOptions = Apollo.BaseMutationOptions<CreateUrlMutation, CreateUrlMutationVariables>;
+export const CreateUrlCLickDocument = gql`
+    mutation createUrlCLick($urlId: Int!) {
+  newClick(urlId: $urlId) {
+    date
+  }
+}
+    `;
+export function useCreateUrlCLickMutation(baseOptions?: Apollo.MutationHookOptions<CreateUrlCLickMutation, CreateUrlCLickMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUrlCLickMutation, CreateUrlCLickMutationVariables>(CreateUrlCLickDocument, options);
+      }
+export type CreateUrlCLickMutationHookResult = ReturnType<typeof useCreateUrlCLickMutation>;
+export type CreateUrlCLickMutationResult = Apollo.MutationResult<CreateUrlCLickMutation>;
+export type CreateUrlCLickMutationOptions = Apollo.BaseMutationOptions<CreateUrlCLickMutation, CreateUrlCLickMutationVariables>;

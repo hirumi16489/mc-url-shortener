@@ -2,7 +2,10 @@ query getUrl($shortUrl: String!) {
     url(shortUrl: $shortUrl) {
         id
         url,
-        shortUrl
+        shortUrl,
+        clicks {
+            date
+        }
     }
 }
 
@@ -11,5 +14,11 @@ mutation createUrl($url: String!) {
         id
         url,
         shortUrl
+    }
+}
+
+mutation createUrlCLick($urlId: Int!){
+    newClick(urlId: $urlId) {
+        date
     }
 }

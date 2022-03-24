@@ -10,11 +10,14 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: any;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  generateUrl: UrlOutputDto;
+  generateUrl: Url;
+  newClick: UrlClick;
 };
 
 
@@ -22,10 +25,15 @@ export type MutationGenerateUrlArgs = {
   url: Scalars['String'];
 };
 
+
+export type MutationNewClickArgs = {
+  urlId: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  url: UrlOutputDto;
-  urls: Array<UrlOutputDto>;
+  url: Url;
+  urls: Array<Url>;
 };
 
 
@@ -35,12 +43,19 @@ export type QueryUrlArgs = {
 
 
 export type QueryUrlsArgs = {
-  ids?: InputMaybe<Array<Scalars['Float']>>;
+  ids?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
 };
 
-export type UrlOutputDto = {
-  __typename?: 'UrlOutputDto';
+export type Url = {
+  __typename?: 'Url';
+  clicks: Array<UrlClick>;
   id: Scalars['Int'];
   shortUrl: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type UrlClick = {
+  __typename?: 'UrlClick';
+  date: Scalars['DateTime'];
+  id: Scalars['Int'];
 };
