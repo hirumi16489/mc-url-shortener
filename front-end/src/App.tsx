@@ -5,10 +5,12 @@ import React, {
   useEffect,
 } from 'react';
 import validator from 'validator';
+import UrlhistoryLine from './components/urlHistoryLine';
 import {
   useCreateUrlMutation,
 } from './graphql/url.generated';
 import { Url } from './graphql';
+import addHostname from './utils/addHostname';
 
 function App() {
   const errorRef = useRef<HTMLDivElement>(null);
@@ -30,8 +32,6 @@ function App() {
       }, 2000);
     }
   }, [urlError]);
-
-  const addHostname = (url: string) => (`http://${window.location.hostname}:3000/${url}`);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewUrl({ value: e.target.value });
@@ -95,12 +95,7 @@ function App() {
         <div className="w-full rounded-2xl bg-white">
           <ul className="divide-y">
             {urls.map((url) => (
-              <li key={url.id} className="px-8 py-4 content-center justify-between flex">
-                <span>{url.url}</span>
-                <span>
-                  <a className="text-blue-600" href={addHostname(url.shortUrl)} target="_blank" rel="noreferrer">{addHostname(url.shortUrl)}</a>
-                </span>
-              </li>
+              <UrlhistoryLine url={url} />
             ))}
           </ul>
         </div>
