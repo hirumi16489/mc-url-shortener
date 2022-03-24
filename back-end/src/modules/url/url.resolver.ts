@@ -7,7 +7,7 @@ import { UrlClickService } from '../url-click/url-click.service';
 export class UrlResolver {
   constructor(private urlService: UrlService, private urlClickService: UrlClickService) {}
 
-  @Query(returns => Url)
+  @Query(returns => Url, { nullable: true })
   url(@Args('shortUrl', { type: () => String }) shortUrl: string) {
     return this.urlService.findOne(shortUrl);
   }

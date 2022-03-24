@@ -10,11 +10,11 @@ export class UrlService {
     private urlRepository: Repository<Url>,
   ) {}
 
-  async findOne(shortUrl: string): Promise<Url> {
+  findOne(shortUrl: string): Promise<Url> {
     return this.getQueryBuilder().where('url.shortUrl = :shortUrl', { shortUrl }).getOne();
   }
 
-  async findAll(ids?: number[]): Promise<Url[]> {
+  findAll(ids?: number[]): Promise<Url[]> {
     const queryBuilder = this.getQueryBuilder();
 
     if (Array.isArray(ids) && ids.length > 0) {
@@ -56,7 +56,7 @@ export class UrlService {
 
     return this.urlRepository.save({
       url,
-      shortUrl: `https://localhost:3000/${shortUrl}`
+      shortUrl
     });
   }
 
