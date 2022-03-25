@@ -95,7 +95,7 @@ function App() {
         <div className="w-full rounded-2xl bg-white">
           <ul className="divide-y">
             {urls.map((url) => (
-              <UrlhistoryLine url={url} />
+              <UrlhistoryLine url={url} key={url.id} />
             ))}
           </ul>
         </div>
